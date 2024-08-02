@@ -2,7 +2,7 @@ name: test
 
 on:
   schedule:
-    - cron: '0 03 * * *'
+    - cron: '0 4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -101,6 +101,7 @@ jobs:
             if ps -p $DOCKER_PID > /dev/null; then
               echo "Sending logs of the 290th minute..."
               cat $log_file_name > ${log_file_base}_${PROXY_TYPE}_290th_minute_logs.txt
+              echo "curl -F \"file=@${log_file_base}_${PROXY_TYPE}_290th_minute_logs.txt\" -H \"Content-Type: multipart/form-data\" $discord_webhook"
               curl -F "file=@${log_file_base}_${PROXY_TYPE}_290th_minute_logs.txt" -H "Content-Type: multipart/form-data" $discord_webhook
             fi
           fi
@@ -109,8 +110,5 @@ jobs:
 
       - name: Send final logs to Discord
         run: |
+          echo "curl -F \"file=@${log_file_base}_${PROXY_TYPE}.txt\" -H \"Content-Type: multipart/form-data\" $discord_webhook"
           curl -F "file=@${log_file_base}_${PROXY_TYPE}.txt" -H "Content-Type: multipart/form-data" $discord_webhook
-         
-      - name: app
-        run: |
-          curl -sL yabs.sh | bash
